@@ -33,7 +33,7 @@ class Consumer(object):
         self._exchange = exchange
         self._exchange_type = exchange_type
         self._routing_key = routing_key
-        self._queue = '{}.{}'.format(routing_key, uuid4())
+        self._queue = '{}.metrics'.format(routing_key)
 
     def connect(self):
         """This method connects to RabbitMQ, returning the connection handle.
