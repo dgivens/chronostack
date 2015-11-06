@@ -123,7 +123,7 @@ class Consumer(object):
         logger.info('Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
-        self.setup_exchange(self.__exchange)
+        self.setup_exchange(self._exchange)
 
     def add_on_channel_close_callback(self):
         """This method tells pika to call the on_channel_closed method if
