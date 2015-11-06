@@ -1,4 +1,4 @@
-from logging import logging
+import logging
 
 
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '

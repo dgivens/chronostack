@@ -1,6 +1,6 @@
 import pika
 import signal
-from metrics.logging import logger
+from metrics.logger import logger
 from uuid import uuid4
 
 
