@@ -1,0 +1,5 @@
+etc/metrics.cfg
+
+*.pyc
+*~
+.*.sw[a-z]
