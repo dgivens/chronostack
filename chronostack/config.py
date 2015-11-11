@@ -1,3 +1,5 @@
+# Centrally handle the config object
+
 import ConfigParser
 import sys
 from chronostack.cli import args

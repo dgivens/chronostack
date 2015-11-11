@@ -1,3 +1,5 @@
+# Centrally handle the cli args
+
 import argparse
 
 parser = argparse.ArgumentParser(description='Process ')

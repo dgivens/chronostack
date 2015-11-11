@@ -1,3 +1,5 @@
+# Centrally handle the redis object
+
 import redis
 from chronostack.config import config
 

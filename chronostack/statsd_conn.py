@@ -1,3 +1,5 @@
+# Centrally handle the statsd object
+
 import statsd
 from chronostack.config import config
 

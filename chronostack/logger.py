@@ -1,3 +1,5 @@
+# Centrally handle the logger
+
 import logging
 from chronostack.config import config
 
