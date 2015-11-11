@@ -310,12 +310,12 @@ class Consumer(object):
         starting the IOLoop to block and allow the SelectConnection to operate.
 
         """
-        signal.signal(signal.SIGINT, self.stop)
-        signal.signal(signal.SIGTERM, self.stop)
+        signal.signal(signal.SIGINT, self.exit)
+        signal.signal(signal.SIGTERM, self.exit)
         self._connection = self.connect()
         self._connection.ioloop.start()
 
-    def stop(self, *args, **kwargs):
+    def stop(self):
         """Cleanly shutdown the connection to RabbitMQ by stopping the consumer
         with RabbitMQ. When RabbitMQ confirms the cancellation, on_cancelok
         will be invoked by pika, which will then closing the channel and
@@ -336,3 +336,8 @@ class Consumer(object):
         """This method closes the connection to RabbitMQ."""
         logger.info('Closing connection')
         self._connection.close()
+
+    def exit(self, *args, **kwargs):
+        """Cleanly shutdown and close the connection to RabbitMQ"""
+        self.stop()
+        self.close_connection()

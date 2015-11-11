@@ -13,7 +13,7 @@ def main():
     try:
         consumer.run()
     except KeyboardInterrupt:
-        consumer.stop()
+        consumer.exit()
 
 
 if __name__ == '__main__':
