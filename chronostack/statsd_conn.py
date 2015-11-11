@@ -1,5 +1,5 @@
 import statsd
-from metrics.config import config
+from chronostack.config import config
 
 
 host = config.get('statsd', 'host')

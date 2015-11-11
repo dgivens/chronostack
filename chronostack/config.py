@@ -1,6 +1,6 @@
 import ConfigParser
 import sys
-from metrics.cli import args
+from chronostack.cli import args
 
 config_file = args.config
 

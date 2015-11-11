@@ -1,5 +1,5 @@
 import redis
-from metrics.config import config
+from chronostack.config import config
 
 redis_host = config.get('redis', 'host')
 redis_port = config.get('redis', 'port')

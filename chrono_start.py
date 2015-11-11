@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-import metrics.cli
-from metrics.config import config
-from metrics.messaging import Consumer
+import chronostack.cli
+from chronostack.config import config
+from chronostack.messaging import Consumer
 
 
 def main():

@@ -1,8 +1,8 @@
 import json
 import pika
 import signal
-from metrics.logger import logger
-from metrics.util import handle_message
+from chronostack.logger import logger
+from chronostack.util import handle_message
 
 
 class Consumer(object):

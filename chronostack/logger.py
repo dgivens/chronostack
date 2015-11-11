@@ -1,5 +1,5 @@
 import logging
-from config import config
+from chronostack.config import config
 
 
 config_log_level = config.get('logging', 'level')

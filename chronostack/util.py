@@ -1,8 +1,8 @@
 import re
 from datetime import datetime
-from metrics.logger import logger
-from metrics.redis_conn import redis_conn as redis
-from metrics.statsd_conn import statsd_conn as statsd
+from chronostack.logger import logger
+from chronostack.redis_conn import redis_conn as redis
+from chronostack.statsd_conn import statsd_conn as statsd
 
 
 def handle_message(message):
