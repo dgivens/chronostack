@@ -1,7 +1,8 @@
+import json
 import pika
 import signal
 from metrics.logger import logger
-from uuid import uuid4
+from metrics.util import handle_message
 
 
 class Consumer(object):
@@ -130,7 +131,7 @@ class Consumer(object):
         RabbitMQ unexpectedly closes the channel.
 
         """
-        logger.info('Adding channel close callback')
+        logger.debug('Adding channel close callback')
         self._channel.add_on_close_callback(self.on_channel_closed)
 
     def on_channel_closed(self, channel, reply_code, reply_text):
@@ -169,7 +170,7 @@ class Consumer(object):
         :param pika.Frame.Method unused_frame: Exchange.DeclareOk response frame
 
         """
-        logger.info('Exchange declared')
+        logger.debug('Exchange declared')
         self.setup_queue(self._queue)
 
     def setup_queue(self, queue_name):
@@ -206,7 +207,7 @@ class Consumer(object):
         :param pika.frame.Method unused_frame: The Queue.BindOk response frame
 
         """
-        logger.info('Queue bound')
+        logger.debug('Queue bound')
         self.start_consuming()
 
     def start_consuming(self):
@@ -219,7 +220,7 @@ class Consumer(object):
         will invoke when a message is fully received.
 
         """
-        logger.info('Issuing consumer related RPC commands')
+        logger.debug('Issuing consumer related RPC commands')
         self.add_on_cancel_callback()
         self._consumer_tag = self._channel.basic_consume(self.on_message,
                                                          self._queue)
@@ -230,7 +231,7 @@ class Consumer(object):
         on_consumer_cancelled will be invoked by pika.
 
         """
-        logger.info('Adding consumer cancellation callback')
+        logger.debug('Adding consumer cancellation callback')
         self._channel.add_on_cancel_callback(self.on_consumer_cancelled)
 
     def on_consumer_cancelled(self, method_frame):
@@ -259,8 +260,10 @@ class Consumer(object):
         :param str|unicode body: The message body
 
         """
-        logger.info('Received message # %s from %s: %s',
-                    basic_deliver.delivery_tag, properties.app_id, body)
+        logger.debug('Received message # %s', basic_deliver.delivery_tag)
+        oslo_message = json.loads(body)
+        message = json.loads(oslo_message.get('oslo.message'))
+        handle_message(message)
         self.acknowledge_message(basic_deliver.delivery_tag)
 
     def acknowledge_message(self, delivery_tag):
@@ -270,7 +273,7 @@ class Consumer(object):
         :param int delivery_tag: The delivery tag from the Basic.Deliver frame
 
         """
-        logger.info('Acknowledging message %s', delivery_tag)
+        logger.debug('Acknowledging message %s', delivery_tag)
         self._channel.basic_ack(delivery_tag)
 
     def stop_consuming(self):
@@ -279,7 +282,7 @@ class Consumer(object):
 
         """
         if self._channel:
-            logger.info('Sending a Basic.Cancel RPC command to RabbitMQ')
+            logger.debug('Sending a Basic.Cancel RPC command to RabbitMQ')
             self._channel.basic_cancel(self.on_cancelok, self._consumer_tag)
 
     def on_cancelok(self, unused_frame):
@@ -291,7 +294,7 @@ class Consumer(object):
         :param pika.frame.Method unused_frame: The Basic.CancelOk frame
 
         """
-        logger.info('RabbitMQ acknowledged the cancellation of the consumer')
+        logger.debug('RabbitMQ acknowledged the cancellation of the consumer')
         self.close_channel()
 
     def close_channel(self):
@@ -299,7 +302,7 @@ class Consumer(object):
         Channel.Close RPC command.
 
         """
-        logger.info('Closing the channel')
+        logger.debug('Closing the channel')
         self._channel.close()
 
     def run(self):
@@ -312,7 +315,7 @@ class Consumer(object):
         self._connection = self.connect()
         self._connection.ioloop.start()
 
-    def stop(self):
+    def stop(self, *args, **kwargs):
         """Cleanly shutdown the connection to RabbitMQ by stopping the consumer
         with RabbitMQ. When RabbitMQ confirms the cancellation, on_cancelok
         will be invoked by pika, which will then closing the channel and
